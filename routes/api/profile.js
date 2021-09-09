@@ -6,7 +6,7 @@ const { check, validationResult } = require('express-validator/check');
 const Profile = require('../../models/Profile');
 const User = require('../../models/User');
 
-//@route GET api/profile/me
+//@route GET api/profile/me (based on id in token)
 //@desc get current users profile
 //@access Private
 router.get('/me', auth, async (req, res) => {
@@ -15,7 +15,8 @@ router.get('/me', auth, async (req, res) => {
       'user',
       ['name', 'avatar']
     );
-
+//ther user on line 14 pertains to profile model user field which is the object ID of user
+//populate allows us to grab name and avatar properties which exists in user schema
     if (!profile) {
       return res.status(400).json({ msg: 'There is no profile for this user '});
     }
@@ -27,11 +28,13 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
-//@route POST api/profile/me
+
+//@route POST api/profile
 //@desc create or update user profile
 //@access Private
 
-router.post('/',
+router.post(
+  '/',
  [
    auth,
    [
@@ -44,8 +47,30 @@ router.post('/',
    ]
  ],
  async (req, res) => {
-  const errors
-})
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const {
+      company,
+      website,
+      location,
+      bio,
+      status,
+      githubusername,
+      skills,
+      youtube,
+      facebook,
+      twitter,
+      instagram,
+      linkedin
+    } = req.body;
+
+    const profileFields = {};
+    profileFields.user = req.user.id;
+  }
+);
 
 module.exports = router;
 
