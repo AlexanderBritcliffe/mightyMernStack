@@ -167,6 +167,64 @@ router.delete('/', auth, async (req, res) => {
   }
 });
 
+//@route PUT api/profile/experience
+//@desc Add profile experience
+//@access Private
+
+router.put('/experience', [ auth, [
+  check('title', 'Title is required')
+    .not()
+    .isEmpty(),
+  check('company', 'Company is required')
+    .not()
+    .isEmpty(),
+  check('from', 'From is required')
+    .not()
+    .isEmpty()
+  ]
+],
+ async (req, res) => {
+   const errors = validationResult(req);
+   if(!errors.isEmpty()) {
+     return res.status(400).json({ errors: errors.array() });
+    }
+//pulls all of the stuff below from req.body
+
+    const {
+      title,
+      company,
+      location,
+      from,
+      to,
+      current,
+      description
+    } = req.body;
+
+    const newExp = {
+      title,
+      company,
+      location,
+      from,
+      to,
+      current,
+      description
+    }
+
+    try {
+      const profile = await Profile.findOne({ user: req.user.id });
+      //fetches profile we wantb to add experience to(finds by user by matching id which we get from token)
+      profile.experience.unshift(newExp);
+      //this is an array un shift is same as push but pushes onto the beginning not end
+      await profile.save();
+
+      res.json(profile);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
+  }
+);
+
 module.exports = router;
 
 //user pertains to profile model user field at top which is the object id of the user on line 13
