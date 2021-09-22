@@ -1,10 +1,12 @@
 import React, { Fragment, useState } from 'react';
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'; //this connects component to redux
 import { Link } from 'react-router-dom';
-import { setAlert } from '../../actions/alert';
+import { setAlert } from '../../actions/alert'; //when bring in an action you have to put it in connect
+import PropTypes from 'prop-types';
 
 //initial state
-const Register = (props) => {
+//setAlert is destructured props
+const Register = ({ setAlert }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -19,7 +21,7 @@ const Register = (props) => {
   const onSubmit = async e => {
     e.preventDefault();
     if(password !== password2) {
-      props.setAlert('Passwords do not match', 'danger');
+      setAlert('Passwords do not match', 'danger'); //this is equivalent to props.setAlert which passes this message to alert actions.js
     } else {
       console.log('Success');
     }
@@ -79,7 +81,11 @@ const Register = (props) => {
   <p className="my-1">
     Already have an account? <Link to="/login">Sign In</Link>
   </p>
-</Fragment>;
+</Fragment>
 };
 
-export default connect(null, { setAlert })(Register);
+Register.propTypes = {
+  setAlert: PropTypes.func.isRequired
+}
+
+export default connect(null, { setAlert })(Register); //this allows us to access props.setAlert
