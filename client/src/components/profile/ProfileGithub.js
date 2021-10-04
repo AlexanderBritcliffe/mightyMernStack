@@ -5,7 +5,7 @@ import Ghost from '../layout/Ghost';
 import { getGithubRepos } from '../../actions/profile';
 
 
-const ProfileGithub = ({ username, getGithubrepos, repos}) => {
+const ProfileGithub = ({ username, getGithubRepos, repos}) => {
   useEffect(() => {
     getGithubRepos(username);
   }, [getGithubRepos]);
@@ -17,7 +17,7 @@ const ProfileGithub = ({ username, getGithubrepos, repos}) => {
       <div key={repo._id} className='repo bg-white p-1 my-1'>
         <div>
           <h4>
-            <a href={repo.html.url} target='_blank' rel='noopener noreferrer'>
+            <a href={repo.html_url} target='_blank' rel='noopener noreferrer'>
               {repo.name}
             </a>
           </h4>
