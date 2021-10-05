@@ -4,7 +4,9 @@ import {
   POST_ERROR,
   UPDATE_LIKES,
   DELETE_POST,
-  ADD_POST
+  ADD_POST,
+  ADD_COMMENT,
+  REMOVE_COMMENT
 } from '../actions/types';
 
 const initialState = {
@@ -56,11 +58,27 @@ export default function(state = initialState, action) {
         posts: state.posts.map(post => post._id === payload.id ? { ...post, likes: payload.likes } : post),
         loading: false
       };
+    case ADD_COMMENT:
+      return {
+        ...state,
+        post: { ...state.post, comments: payload },
+        loading: false
+      };
+    case REMOVE_COMMENT:
+      return {
+        ...state,
+        post: {
+          ...state.post,
+          comments: state.post.comments.filter(comment => comment._id !== payload),
+        },
+        loading: false
+      }
     default:
       return state;
   }
 }
 
+//line 70 we want to bring in all comments except the one with that id since it was just deleted from server we want to delete it from state and ui
 //update likes...map through posts for each post check to see if its the correct
 //one and matches the payload id if it does return new state with all stuff in
 //that post...we just want to manipulate the likes to the likes that are returned
